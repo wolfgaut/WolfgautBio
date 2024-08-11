@@ -584,14 +584,17 @@
             html {
                 font-size: 11pt;
             }
+
             #main>.inner {
                 --padding-horizontal: 2rem;
                 --padding-vertical: 3.5rem;
                 --spacing: 0.75rem;
             }
+
             #buttons01 {
                 gap: 2rem;
             }
+
             #buttons01 li a {
                 letter-spacing: 0.1rem;
                 padding-left: calc(0.1rem + 1.0625rem);
@@ -603,10 +606,12 @@
             #main>.inner {
                 --spacing: 0.65625rem;
             }
+
             #buttons01 {
                 flex-direction: column;
                 flex-wrap: nowrap;
             }
+
             #buttons01 li a {
                 max-width: 32rem;
                 width: 100%;
@@ -619,6 +624,7 @@
                 --padding-vertical: 2.625rem;
                 --spacing: 0.5625rem;
             }
+
             #buttons01 {
                 gap: 1.5rem;
             }
@@ -631,37 +637,36 @@
         <div id="main">
             <div class="inner">
                 <ul id="buttons01" class="buttons">
-                    <li><a href="https://wolfgaut.github.io/WolfgautBio/Index1.Html" class="button n01">Social</a></li>
+                    <li><a href="https://wolfgaut.github.io/WolfgautBio/Index1.html" class="button n01">Social</a></li>
                     <li><a href="https://wolfgaut.github.io/WolfgautBio/index2.html" class="button n02">Music</a></li>
                 </ul>
-                <div id="credits" class="icc-credits"><span><a href="https://carrd.co/build?ref=auto">Made with Carrd</a></span></div>
             </div>
         </div>
     </div>
     <script>
-        (function() {
+        (function () {
             var on = addEventListener,
                 off = removeEventListener,
-                $ = function(q) {
+                $ = function (q) {
                     return document.querySelector(q)
                 },
-                $$ = function(q) {
+                $$ = function (q) {
                     return document.querySelectorAll(q)
                 },
                 $body = document.body,
                 $inner = $('.inner'),
-                client = (function() {
+                client = (function () {
                     var o = {
-                            browser: 'other',
-                            browserVersion: 0,
-                            os: 'other',
-                            osVersion: 0,
-                            mobile: false,
-                            canUse: null,
-                            flags: {
-                                lsdUnits: false,
-                            },
+                        browser: 'other',
+                        browserVersion: 0,
+                        os: 'other',
+                        osVersion: 0,
+                        mobile: false,
+                        canUse: null,
+                        flags: {
+                            lsdUnits: false,
                         },
+                    },
                         ua = navigator.userAgent,
                         a, i;
                     a = [
@@ -680,17 +685,17 @@
                         }
                     }
                     a = [
-                        ['ios', /([0-9_]+) like Mac OS X/, function(v) {
+                        ['ios', /([0-9_]+) like Mac OS X/, function (v) {
                             return v.replace('_', '.').replace('_', '');
                         }],
-                        ['ios', /CPU like Mac OS X/, function(v) {
+                        ['ios', /CPU like Mac OS X/, function (v) {
                             return 0
                         }],
-                        ['ios', /iPad; CPU/, function(v) {
+                        ['ios', /iPad; CPU/, function (v) {
                             return 0
                         }],
                         ['android', /Android ([0-9\.]+)/, null],
-                        ['mac', /Macintosh.+Mac OS X ([0-9_]+)/, function(v) {
+                        ['mac', /Macintosh.+Mac OS X ([0-9_]+)/, function (v) {
                             return v.replace('_', '.').replace('_', '');
                         }],
                         ['windows', /Windows NT ([0-9\.]+)/, null],
@@ -706,7 +711,7 @@
                     if (o.os == 'mac' && ('ontouchstart' in window) && ((screen.width == 1024 && screen.height == 1366) || (screen.width == 834 && screen.height == 1112) || (screen.width == 810 && screen.height == 1080) || (screen.width == 768 && screen.height == 1024))) o.os = 'ios';
                     o.mobile = (o.os == 'android' || o.os == 'ios');
                     var _canUse = document.createElement('div');
-                    o.canUse = function(property, value) {
+                    o.canUse = function (property, value) {
                         var style;
                         style = _canUse.style;
                         if (!(property in style)) return false;
@@ -721,26 +726,26 @@
                 }()),
                 ready = {
                     list: [],
-                    add: function(f) {
+                    add: function (f) {
                         this.list.push(f);
                     },
-                    run: function() {
+                    run: function () {
                         this.list.forEach((f) => {
                             f();
                         });
                     },
                 },
-                trigger = function(t) {
+                trigger = function (t) {
                     dispatchEvent(new Event(t));
                 },
-                cssRules = function(selectorText) {
+                cssRules = function (selectorText) {
                     var ss = document.styleSheets,
                         a = [],
-                        f = function(s) {
+                        f = function (s) {
                             var r = s.cssRules,
                                 i;
                             for (i = 0; i < r.length; i++) {
-                                if (r[i] instanceof CSSMediaRule && matchMedia(r[i].conditionText).matches)(f)(r[i]);
+                                if (r[i] instanceof CSSMediaRule && matchMedia(r[i].conditionText).matches) (f)(r[i]);
                                 else if (r[i] instanceof CSSStyleRule && r[i].selectorText == selectorText) a.push(r[i]);
                             }
                         },
@@ -748,7 +753,7 @@
                     for (i = 0; i < ss.length; i++) f(ss[i]);
                     return a;
                 },
-                escapeHtml = function(s) {
+                escapeHtml = function (s) {
                     if (s === '' || s === null || s === undefined) return '';
                     var a = {
                         '&': '&amp;',
@@ -757,12 +762,12 @@
                         '"': '&quot;',
                         "'": '&#39;',
                     };
-                    s = s.replace(/[&<>"']/g, function(x) {
+                    s = s.replace(/[&<>"']/g, function (x) {
                         return a[x];
                     });
                     return s;
                 },
-                thisHash = function() {
+                thisHash = function () {
                     var h = location.hash ? location.hash.substring(1) : null,
                         a;
                     if (!h) return null;
@@ -776,7 +781,7 @@
                     if (typeof h == 'string') h = h.toLowerCase();
                     return h;
                 },
-                scrollToElement = function(e, style, duration) {
+                scrollToElement = function (e, style, duration) {
                     var y, cy, dy, start, easing, offset, f;
                     if (!e) y = 0;
                     else {
@@ -807,17 +812,17 @@
                     dy = y - cy;
                     switch (style) {
                         case 'linear':
-                            easing = function(t) {
+                            easing = function (t) {
                                 return t
                             };
                             break;
                         case 'smooth':
-                            easing = function(t) {
+                            easing = function (t) {
                                 return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
                             };
                             break;
                     }
-                    f = function() {
+                    f = function () {
                         var t = Date.now() - start;
                         if (t >= duration) window.scroll(0, y);
                         else {
@@ -827,10 +832,10 @@
                     };
                     f();
                 },
-                scrollToTop = function() {
+                scrollToTop = function () {
                     scrollToElement(null);
                 },
-                loadElements = function(parent) {
+                loadElements = function (parent) {
                     var a, e, x, i;
                     a = parent.querySelectorAll('iframe[data-src]:not([data-src=""])');
                     for (i = 0; i < a.length; i++) {
@@ -867,7 +872,7 @@
                         element.dispatchEvent(x);
                     });
                 },
-                unloadElements = function(parent) {
+                unloadElements = function (parent) {
                     var a, e, x, i;
                     a = parent.querySelectorAll('iframe[data-src=""]');
                     for (i = 0; i < a.length; i++) {
@@ -884,10 +889,10 @@
                     if (e) e.blur();
                 };
             window._scrollToTop = scrollToTop;
-            var thisUrl = function() {
+            var thisUrl = function () {
                 return window.location.href.replace(window.location.search, '').replace(/#$/, '');
             };
-            var getVar = function(name) {
+            var getVar = function (name) {
                 var a = window.location.search.substring(1).split('&'),
                     b, k;
                 for (k in a) {
@@ -897,13 +902,13 @@
                 return null;
             };
             var errors = {
-                handle: function(handler) {
-                    window.onerror = function(message, url, line, column, error) {
+                handle: function (handler) {
+                    window.onerror = function (message, url, line, column, error) {
                         (handler)(error.message);
                         return true;
                     };
                 },
-                unhandle: function() {
+                unhandle: function () {
                     window.onerror = null;
                 }
             };
@@ -914,18 +919,18 @@
             document.head.appendChild(style);
             sheet = style.sheet;
             if (client.mobile) {
-                (function() {
+                (function () {
                     if (client.flags.lsdUnits) {
                         document.documentElement.style.setProperty('--viewport-height', '100svh');
                         document.documentElement.style.setProperty('--background-height', '100lvh');
                     } else {
-                        var f = function() {
+                        var f = function () {
                             document.documentElement.style.setProperty('--viewport-height', window.innerHeight + 'px');
                             document.documentElement.style.setProperty('--background-height', (window.innerHeight + 250) + 'px');
                         };
                         on('load', f);
-                        on('orientationchange', function() {
-                            setTimeout(function() {
+                        on('orientationchange', function () {
+                            setTimeout(function () {
                                 (f)();
                             }, 100);
                         });
@@ -933,10 +938,10 @@
                 })();
             }
             if (client.os == 'android') {
-                (function() {
+                (function () {
                     sheet.insertRule('body::after { }', 0);
                     rule = sheet.cssRules[0];
-                    var f = function() {
+                    var f = function () {
                         rule.style.cssText = 'height: ' + (Math.max(screen.width, screen.height)) + 'px';
                     };
                     on('load', f);
@@ -945,19 +950,19 @@
                 })();
                 $body.classList.add('is-touch');
             } else if (client.os == 'ios') {
-                if (client.osVersion <= 11)(function() {
+                if (client.osVersion <= 11) (function () {
                     sheet.insertRule('body::after { }', 0);
                     rule = sheet.cssRules[0];
                     rule.style.cssText = '-webkit-transform: scale(1.0)';
                 })();
-                if (client.osVersion <= 11)(function() {
+                if (client.osVersion <= 11) (function () {
                     sheet.insertRule('body.ios-focus-fix::before { }', 0);
                     rule = sheet.cssRules[0];
                     rule.style.cssText = 'height: calc(100% + 60px)';
-                    on('focus', function(event) {
+                    on('focus', function (event) {
                         $body.classList.add('ios-focus-fix');
                     }, true);
-                    on('blur', function(event) {
+                    on('blur', function (event) {
                         $body.classList.remove('ios-focus-fix');
                     }, true);
                 })();
