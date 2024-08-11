@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-    <a href="index1.html">À propos</a>
     <title>WolfgautCC</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -12,7 +11,7 @@
     <meta property="og:title" content="WolfgautCC" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="WolfgautCC Explanation" />
-    <meta property="og:image" content="https://wolfgautcc.carrd.co/assets/images/card.jpg?v=d84d6877" />
+    <meta property="og:image" content="https://wolfgautcc.carrd.co/assets/images/card.jpg?v=2df188f5" />
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1280" />
     <meta property="og:image:height" content="800" />
@@ -406,6 +405,68 @@
         body.is-instant:after {
             display: none !important;
             transition: none !important;
+        }
+
+        .buttons {
+            cursor: default;
+            display: flex;
+            justify-content: var(--flex-alignment);
+            letter-spacing: 0;
+            padding: 0;
+        }
+
+        .buttons li {
+            max-width: 100%;
+            text-align: var(--alignment);
+        }
+
+        .buttons li a {
+            align-items: center;
+            justify-content: center;
+            max-width: 100%;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .buttons.style1 {
+            --flex-alignment: center;
+            --alignment: center;
+            gap: 1rem;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .buttons.style1 li a {
+            display: inline-block;
+            width: auto;
+            height: 2.25rem;
+            line-height: 2.25rem;
+            padding: 0 1.125rem;
+            vertical-align: middle;
+            font-family: '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            font-size: 1em;
+            font-weight: 700;
+            border-radius: 0.875rem;
+            box-shadow: 0rem 0.5rem 0.5rem 0rem rgba(0, 0, 0, 0.549);
+            direction: var(--site-language-direction);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+        }
+
+        .buttons.style1 .button {
+            background-color: #2B2B2B;
+            color: #FFFFFF;
+            background-image: linear-gradient(45deg, #2B2B2B 0%, rgba(43, 43, 43, 0.008) 100%);
+            background-position: 0% 0%;
+            background-repeat: repeat;
+            background-size: cover;
+        }
+
+        #buttons01 .n01 {
+            color: #FFFFFF;
         }
 
         h1,
@@ -922,6 +983,15 @@
                 --spacing: 0.75rem;
             }
 
+            .buttons.style1 {
+                gap: 1rem;
+            }
+
+            .buttons.style1 li a {
+                letter-spacing: 0rem;
+                font-size: 1em;
+            }
+
             #text08 {
                 letter-spacing: 0rem;
                 width: 100%;
@@ -1089,6 +1159,16 @@
             #main>.inner {
                 --spacing: 0.65625rem;
             }
+
+            .buttons.style1 {
+                flex-direction: column;
+                flex-wrap: nowrap;
+            }
+
+            .buttons.style1 li a {
+                max-width: 32rem;
+                width: 100%;
+            }
         }
 
         @media (max-width: 360px) {
@@ -1100,6 +1180,10 @@
                 --padding-horizontal: 1.5rem;
                 --padding-vertical: 2.625rem;
                 --spacing: 0.5625rem;
+            }
+
+            .buttons.style1 {
+                gap: 0.75rem;
             }
 
             #text08 {
@@ -1147,6 +1231,11 @@
     <div id="wrapper">
         <div id="main">
             <div class="inner">
+                <ul id="buttons01" class="style1 buttons">
+                    <li><a href="https://wolfgaut.github.io/WolfgautBio/" class="button n01">Home</a></li>
+                    <li><a href="https://wolfgaut.github.io/WolfgautBio/index1.html" class="button n02">Social</a></li>
+                    <li><a href="https://wolfgaut.github.io/WolfgautBio/index2.html" class="button n03">Music</a></li>
+                </ul>
                 <h2 id="text08">License</h2>
                 <hr id="divider02">
                 <p id="text01"><span class="p">All my music is licensed under this license:<br /> <a

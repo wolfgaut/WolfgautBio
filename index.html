@@ -11,7 +11,7 @@
     <meta property="og:title" content="Nothing" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="NOthing" />
-    <meta property="og:image" content="https://nothingw.carrd.co/assets/images/card.jpg?v=334ace04" />
+    <meta property="og:image" content="https://nothingw.carrd.co/assets/images/card.jpg?v=2b97c718" />
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1280" />
     <meta property="og:image:height" content="800" />
@@ -303,7 +303,7 @@
             overflow: hidden;
             position: relative;
             z-index: 2;
-            padding: 6rem 6rem 6rem 6rem;
+            padding: 3.3125rem 3.3125rem 3.3125rem 3.3125rem;
         }
 
         #main {
@@ -344,8 +344,8 @@
             --border-radius-tr: calc(3rem - 6px);
             --border-radius-br: calc(3rem - 6px);
             --border-radius-bl: calc(3rem - 6px);
-            --padding-horizontal: 3rem;
-            --padding-vertical: 12rem;
+            --padding-horizontal: 2.875rem;
+            --padding-vertical: 6.625rem;
             --spacing: 0.75rem;
             --width: 40rem;
             border-radius: var(--border-radius-tl) var(--border-radius-tr) var(--border-radius-br) var(--border-radius-bl);
@@ -408,6 +408,66 @@
             transition: none !important;
         }
 
+        .image {
+            display: block;
+            line-height: 0;
+            max-width: 100%;
+            position: relative;
+        }
+
+        .image .frame {
+            -webkit-backface-visibility: hidden;
+            -webkit-transform: translate3d(0, 0, 0);
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            vertical-align: top;
+            width: 100%;
+        }
+
+        .image .frame img {
+            border-radius: 0 !important;
+            max-width: 100%;
+            vertical-align: top;
+            width: inherit;
+        }
+
+        .image.full .frame {
+            display: block;
+        }
+
+        .image.full:first-child .frame {
+            border-top-left-radius: inherit;
+            border-top-right-radius: inherit;
+        }
+
+        .image.full:last-child .frame {
+            border-bottom-left-radius: inherit;
+            border-bottom-right-radius: inherit;
+        }
+
+        #image01 {
+            text-align: center;
+        }
+
+        #image01 .frame {
+            width: 10.125rem;
+            border-radius: 1.375rem;
+            border-color: #000000;
+            border-style: solid;
+            border-width: 6px;
+            box-shadow: 0rem 1.75rem 2rem 0rem rgba(0, 0, 0, 0.62);
+            transition: none;
+        }
+
+        #image01 .frame img:first-child {
+            border-radius: calc(1.375rem - 6px) !important;
+        }
+
+        #image01 .frame img {
+            transition: none;
+        }
+
         .buttons {
             cursor: default;
             display: flex;
@@ -432,6 +492,8 @@
         }
 
         #buttons01 {
+            --flex-alignment: center;
+            --alignment: center;
             gap: 2rem;
             flex-direction: row;
             flex-wrap: wrap;
@@ -591,6 +653,10 @@
                 --spacing: 0.75rem;
             }
 
+            #image01 .frame {
+                width: 10.125rem;
+            }
+
             #buttons01 {
                 gap: 2rem;
             }
@@ -636,8 +702,10 @@
     <div id="wrapper">
         <div id="main">
             <div class="inner">
+                <div id="image01" class="image"><span class="frame"><img src="assets/images/image01.jpg?v=2b97c718"
+                            alt="" /></span></div>
                 <ul id="buttons01" class="buttons">
-                    <li><a href="https://wolfgaut.github.io/WolfgautBio/index1.html" class="button n01">Social</a></li>
+                    <li><a href="https://wolfgaut.github.io/WolfgautBio/Index1.Html" class="button n01">Social</a></li>
                     <li><a href="https://wolfgaut.github.io/WolfgautBio/index2.html" class="button n02">Music</a></li>
                 </ul>
             </div>
