@@ -11,7 +11,7 @@
     <meta property="og:title" content="Nothing" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="NOthing" />
-    <meta property="og:image" content="https://nothingw.carrd.co/assets/images/card.jpg?v=2b97c718" />
+    <meta property="og:image" content="https://nothingw.carrd.co/assets/images/card.jpg?v=b99ebfda" />
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1280" />
     <meta property="og:image:height" content="800" />
@@ -205,6 +205,28 @@
             background-repeat: repeat, repeat;
         }
 
+        body:after {
+            background-color: #171217;
+            content: '';
+            display: block;
+            height: 100%;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            transform: scale(1);
+            transition: opacity 1s ease-in-out 0s, visibility 1s 0s;
+            visibility: hidden;
+            width: 100%;
+            z-index: 1;
+        }
+
+        body.is-loading:after {
+            opacity: 1;
+            visibility: visible;
+        }
+
         :root {
             --background-height: 100vh;
             --site-language-alignment: left;
@@ -337,6 +359,7 @@
             border-right: solid 6px #000000;
             border-bottom: solid 6px #000000;
             border-left: solid 6px #000000;
+            transition: opacity 1s ease-in-out 0s;
         }
 
         #main>.inner {
@@ -395,6 +418,10 @@
             left: 50%;
             margin-left: -50vw;
             right: auto;
+        }
+
+        body.is-loading #main {
+            opacity: 0;
         }
 
         body.is-instant #main,
@@ -695,17 +722,38 @@
                 gap: 1.5rem;
             }
         }
-    </style>
+    </style><noscript>
+        <style>
+            body {
+                overflow: auto !important;
+            }
+
+            body:after {
+                display: none !important;
+            }
+
+            #main>.inner {
+                opacity: 1.0 !important;
+            }
+
+            #main {
+                opacity: 1.0 !important;
+                transform: none !important;
+                transition: none !important;
+                filter: none !important;
+            }
+        </style>
+    </noscript>
 </head>
 
-<body>
+<body class="is-loading">
     <div id="wrapper">
         <div id="main">
             <div class="inner">
-                <div id="image01" class="image"><span class="frame"><img src="assets/images/image01.jpg?v=2b97c718"
+                <div id="image01" class="image"><span class="frame"><img src="assets/images/image01.jpg?v=b99ebfda"
                             alt="" /></span></div>
                 <ul id="buttons01" class="buttons">
-                    <li><a href="https://wolfgaut.github.io/WolfgautBio/index1.html" class="button n01">Social</a></li>
+                    <li><a href="https://wolfgaut.github.io/WolfgautBio/index1.Html" class="button n01">Social</a></li>
                     <li><a href="https://wolfgaut.github.io/WolfgautBio/index2.html" class="button n02">Music</a></li>
                 </ul>
             </div>
@@ -980,6 +1028,17 @@
                     window.onerror = null;
                 }
             };
+            var loadHandler = function () {
+                setTimeout(function () {
+                    $body.classList.remove('is-loading');
+                    $body.classList.add('is-playing');
+                    setTimeout(function () {
+                        $body.classList.remove('is-playing');
+                        $body.classList.add('is-ready');
+                    }, 1000);
+                }, 100);
+            };
+            on('load', loadHandler);
             loadElements(document.body);
             var style, sheet, rule;
             style = document.createElement('style');
@@ -1036,6 +1095,830 @@
                 })();
                 $body.classList.add('is-touch');
             }
+            var scrollEvents = {
+                items: [],
+                add: function (o) {
+                    this.items.push({
+                        element: o.element,
+                        triggerElement: (('triggerElement' in o && o.triggerElement) ? o.triggerElement : o.element),
+                        enter: ('enter' in o ? o.enter : null),
+                        leave: ('leave' in o ? o.leave : null),
+                        mode: ('mode' in o ? o.mode : 4),
+                        threshold: ('threshold' in o ? o.threshold : 0.25),
+                        offset: ('offset' in o ? o.offset : 0),
+                        initialState: ('initialState' in o ? o.initialState : null),
+                        state: false,
+                    });
+                },
+                handler: function () {
+                    var height, top, bottom, scrollPad;
+                    if (client.os == 'ios') {
+                        height = document.documentElement.clientHeight;
+                        top = document.body.scrollTop + window.scrollY;
+                        bottom = top + height;
+                        scrollPad = 125;
+                    } else {
+                        height = document.documentElement.clientHeight;
+                        top = document.documentElement.scrollTop;
+                        bottom = top + height;
+                        scrollPad = 0;
+                    }
+                    scrollEvents.items.forEach(function (item) {
+                        var elementTop, elementBottom, viewportTop, viewportBottom, bcr, pad, state, a, b;
+                        if (!item.enter && !item.leave) return true;
+                        if (!item.triggerElement) return true;
+                        if (item.triggerElement.offsetParent === null) {
+                            if (item.state == true && item.leave) {
+                                item.state = false;
+                                (item.leave).apply(item.element);
+                                if (!item.enter) item.leave = null;
+                            }
+                            return true;
+                        }
+                        bcr = item.triggerElement.getBoundingClientRect();
+                        elementTop = top + Math.floor(bcr.top);
+                        elementBottom = elementTop + bcr.height;
+                        if (item.initialState !== null) {
+                            state = item.initialState;
+                            item.initialState = null;
+                        } else {
+                            switch (item.mode) {
+                                case 1:
+                                default:
+                                    state = (bottom > (elementTop - item.offset) && top < (elementBottom + item.offset));
+                                    break;
+                                case 2:
+                                    a = (top + (height * 0.5));
+                                    state = (a > (elementTop - item.offset) && a < (elementBottom + item.offset));
+                                    break;
+                                case 3:
+                                    a = top + (height * (item.threshold));
+                                    if (a - (height * 0.375) <= 0) a = 0;
+                                    b = top + (height * (1 - item.threshold));
+                                    if (b + (height * 0.375) >= document.body.scrollHeight - scrollPad) b = document.body.scrollHeight + scrollPad;
+                                    state = (b > (elementTop - item.offset) && a < (elementBottom + item.offset));
+                                    break;
+                                case 4:
+                                    pad = height * item.threshold;
+                                    viewportTop = (top + pad);
+                                    viewportBottom = (bottom - pad);
+                                    if (Math.floor(top) <= pad) viewportTop = top;
+                                    if (Math.ceil(bottom) >= (document.body.scrollHeight - pad)) viewportBottom = bottom;
+                                    if ((viewportBottom - viewportTop) >= (elementBottom - elementTop)) {
+                                        state = ((elementTop >= viewportTop && elementBottom <= viewportBottom) || (elementTop >= viewportTop && elementTop <= viewportBottom) || (elementBottom >= viewportTop && elementBottom <= viewportBottom));
+                                    } else state = ((viewportTop >= elementTop && viewportBottom <= elementBottom) || (elementTop >= viewportTop && elementTop <= viewportBottom) || (elementBottom >= viewportTop && elementBottom <= viewportBottom));
+                                    break;
+                            }
+                        }
+                        if (state != item.state) {
+                            item.state = state;
+                            if (item.state) {
+                                if (item.enter) {
+                                    (item.enter).apply(item.element);
+                                    if (!item.leave) item.enter = null;
+                                }
+                            } else {
+                                if (item.leave) {
+                                    (item.leave).apply(item.element);
+                                    if (!item.enter) item.leave = null;
+                                }
+                            }
+                        }
+                    });
+                },
+                init: function () {
+                    on('load', this.handler);
+                    on('resize', this.handler);
+                    on('scroll', this.handler);
+                    (this.handler)();
+                }
+            };
+            scrollEvents.init();
+            var onvisible = {
+                effects: {
+                    'blur-in': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'filter ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.opacity = 0;
+                            this.style.filter = 'blur(' + (0.25 * intensity) + 'rem)';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.filter = 'none';
+                        },
+                    },
+                    'zoom-in': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity, alt) {
+                            this.style.opacity = 0;
+                            this.style.transform = 'scale(' + (1 - ((alt ? 0.25 : 0.05) * intensity)) + ')';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'zoom-out': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity, alt) {
+                            this.style.opacity = 0;
+                            this.style.transform = 'scale(' + (1 + ((alt ? 0.25 : 0.05) * intensity)) + ')';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'slide-left': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function () {
+                            this.style.transform = 'translateX(100vw)';
+                        },
+                        play: function () {
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'slide-right': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function () {
+                            this.style.transform = 'translateX(-100vw)';
+                        },
+                        play: function () {
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'flip-forward': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity, alt) {
+                            this.style.opacity = 0;
+                            this.style.transformOrigin = '50% 50%';
+                            this.style.transform = 'perspective(1000px) rotateX(' + ((alt ? 45 : 15) * intensity) + 'deg)';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'flip-backward': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity, alt) {
+                            this.style.opacity = 0;
+                            this.style.transformOrigin = '50% 50%';
+                            this.style.transform = 'perspective(1000px) rotateX(' + ((alt ? -45 : -15) * intensity) + 'deg)';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'flip-left': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity, alt) {
+                            this.style.opacity = 0;
+                            this.style.transformOrigin = '50% 50%';
+                            this.style.transform = 'perspective(1000px) rotateY(' + ((alt ? 45 : 15) * intensity) + 'deg)';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'flip-right': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity, alt) {
+                            this.style.opacity = 0;
+                            this.style.transformOrigin = '50% 50%';
+                            this.style.transform = 'perspective(1000px) rotateY(' + ((alt ? -45 : -15) * intensity) + 'deg)';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'tilt-left': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity, alt) {
+                            this.style.opacity = 0;
+                            this.style.transform = 'rotate(' + ((alt ? 45 : 5) * intensity) + 'deg)';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'tilt-right': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity, alt) {
+                            this.style.opacity = 0;
+                            this.style.transform = 'rotate(' + ((alt ? -45 : -5) * intensity) + 'deg)';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'fade-right': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.opacity = 0;
+                            this.style.transform = 'translateX(' + (-1.5 * intensity) + 'rem)';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'fade-left': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.opacity = 0;
+                            this.style.transform = 'translateX(' + (1.5 * intensity) + 'rem)';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'fade-down': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.opacity = 0;
+                            this.style.transform = 'translateY(' + (-1.5 * intensity) + 'rem)';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'fade-up': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.opacity = 0;
+                            this.style.transform = 'translateY(' + (1.5 * intensity) + 'rem)';
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'fade-in': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'opacity ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function () {
+                            this.style.opacity = 0;
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                        },
+                    },
+                    'fade-in-background': {
+                        type: 'manual',
+                        rewind: function () {
+                            this.style.removeProperty('--onvisible-delay');
+                            this.style.removeProperty('--onvisible-background-color');
+                        },
+                        play: function (speed, delay) {
+                            this.style.setProperty('--onvisible-speed', speed + 's');
+                            if (delay) this.style.setProperty('--onvisible-delay', delay + 's');
+                            this.style.setProperty('--onvisible-background-color', 'rgba(0,0,0,0.001)');
+                        },
+                    },
+                    'zoom-in-image': {
+                        type: 'transition',
+                        target: 'img',
+                        transition: function (speed, delay) {
+                            return 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function () {
+                            this.style.transform = 'scale(1)';
+                        },
+                        play: function (intensity) {
+                            this.style.transform = 'scale(' + (1 + (0.1 * intensity)) + ')';
+                        },
+                    },
+                    'zoom-out-image': {
+                        type: 'transition',
+                        target: 'img',
+                        transition: function (speed, delay) {
+                            return 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.transform = 'scale(' + (1 + (0.1 * intensity)) + ')';
+                        },
+                        play: function () {
+                            this.style.transform = 'none';
+                        },
+                    },
+                    'focus-image': {
+                        type: 'transition',
+                        target: 'img',
+                        transition: function (speed, delay) {
+                            return 'transform ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '') + ', ' + 'filter ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.transform = 'scale(' + (1 + (0.05 * intensity)) + ')';
+                            this.style.filter = 'blur(' + (0.25 * intensity) + 'rem)';
+                        },
+                        play: function (intensity) {
+                            this.style.transform = 'none';
+                            this.style.filter = 'none';
+                        },
+                    },
+                    'wipe-up': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'mask-size ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.maskComposite = 'exclude';
+                            this.style.maskRepeat = 'no-repeat';
+                            this.style.maskImage = 'linear-gradient(0deg, black 100%, transparent 100%)';
+                            this.style.maskPosition = '0% 100%';
+                            this.style.maskSize = '100% 0%';
+                        },
+                        play: function () {
+                            this.style.maskSize = '110% 110%';
+                        },
+                    },
+                    'wipe-down': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'mask-size ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.maskComposite = 'exclude';
+                            this.style.maskRepeat = 'no-repeat';
+                            this.style.maskImage = 'linear-gradient(0deg, black 100%, transparent 100%)';
+                            this.style.maskPosition = '0% 0%';
+                            this.style.maskSize = '100% 0%';
+                        },
+                        play: function () {
+                            this.style.maskSize = '110% 110%';
+                        },
+                    },
+                    'wipe-left': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'mask-size ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.maskComposite = 'exclude';
+                            this.style.maskRepeat = 'no-repeat';
+                            this.style.maskImage = 'linear-gradient(90deg, black 100%, transparent 100%)';
+                            this.style.maskPosition = '100% 0%';
+                            this.style.maskSize = '0% 100%';
+                        },
+                        play: function () {
+                            this.style.maskSize = '110% 110%';
+                        },
+                    },
+                    'wipe-right': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'mask-size ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.maskComposite = 'exclude';
+                            this.style.maskRepeat = 'no-repeat';
+                            this.style.maskImage = 'linear-gradient(90deg, black 100%, transparent 100%)';
+                            this.style.maskPosition = '0% 0%';
+                            this.style.maskSize = '0% 100%';
+                        },
+                        play: function () {
+                            this.style.maskSize = '110% 110%';
+                        },
+                    },
+                    'wipe-diagonal': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'mask-size ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.maskComposite = 'exclude';
+                            this.style.maskRepeat = 'no-repeat';
+                            this.style.maskImage = 'linear-gradient(45deg, black 50%, transparent 50%)';
+                            this.style.maskPosition = '0% 100%';
+                            this.style.maskSize = '0% 0%';
+                        },
+                        play: function () {
+                            this.style.maskSize = '220% 220%';
+                        },
+                    },
+                    'wipe-reverse-diagonal': {
+                        type: 'transition',
+                        transition: function (speed, delay) {
+                            return 'mask-size ' + speed + 's ease' + (delay ? ' ' + delay + 's' : '');
+                        },
+                        rewind: function (intensity) {
+                            this.style.maskComposite = 'exclude';
+                            this.style.maskRepeat = 'no-repeat';
+                            this.style.maskImage = 'linear-gradient(135deg, transparent 50%, black 50%)';
+                            this.style.maskPosition = '100% 100%';
+                            this.style.maskSize = '0% 0%';
+                        },
+                        play: function () {
+                            this.style.maskSize = '220% 220%';
+                        },
+                    },
+                    'pop-in': {
+                        type: 'animate',
+                        keyframes: function (intensity) {
+                            let diff = (intensity + 1) * 0.025;
+                            return [{
+                                opacity: 0,
+                                transform: 'scale(' + (1 - diff) + ')',
+                            }, {
+                                opacity: 1,
+                                transform: 'scale(' + (1 + diff) + ')',
+                            }, {
+                                opacity: 1,
+                                transform: 'scale(' + (1 - (diff * 0.25)) + ')',
+                                offset: 0.9,
+                            }, {
+                                opacity: 1,
+                                transform: 'scale(1)',
+                            }];
+                        },
+                        options: function (speed) {
+                            return {
+                                duration: speed,
+                                iterations: 1,
+                            };
+                        },
+                        rewind: function () {
+                            this.style.opacity = 0;
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                        },
+                    },
+                    'bounce-up': {
+                        type: 'animate',
+                        keyframes: function (intensity) {
+                            let diff = (intensity + 1) * 0.075;
+                            return [{
+                                opacity: 0,
+                                transform: 'translateY(' + diff + 'rem)',
+                            }, {
+                                opacity: 1,
+                                transform: 'translateY(' + (-1 * diff) + 'rem)',
+                            }, {
+                                opacity: 1,
+                                transform: 'translateY(' + (diff * 0.25) + 'rem)',
+                                offset: 0.9,
+                            }, {
+                                opacity: 1,
+                                transform: 'translateY(0)',
+                            }];
+                        },
+                        options: function (speed) {
+                            return {
+                                duration: speed,
+                                iterations: 1,
+                            };
+                        },
+                        rewind: function () {
+                            this.style.opacity = 0;
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                        },
+                    },
+                    'bounce-down': {
+                        type: 'animate',
+                        keyframes: function (intensity) {
+                            let diff = (intensity + 1) * 0.075;
+                            return [{
+                                opacity: 0,
+                                transform: 'translateY(' + (-1 * diff) + 'rem)',
+                            }, {
+                                opacity: 1,
+                                transform: 'translateY(' + diff + 'rem)',
+                            }, {
+                                opacity: 1,
+                                transform: 'translateY(' + (-1 * (diff * 0.25)) + 'rem)',
+                                offset: 0.9,
+                            }, {
+                                opacity: 1,
+                                transform: 'translateY(0)',
+                            }];
+                        },
+                        options: function (speed) {
+                            return {
+                                duration: speed,
+                                iterations: 1,
+                            };
+                        },
+                        rewind: function () {
+                            this.style.opacity = 0;
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                        },
+                    },
+                    'bounce-left': {
+                        type: 'animate',
+                        keyframes: function (intensity) {
+                            let diff = (intensity + 1) * 0.075;
+                            return [{
+                                opacity: 0,
+                                transform: 'translateX(' + diff + 'rem)',
+                            }, {
+                                opacity: 1,
+                                transform: 'translateX(' + (-1 * diff) + 'rem)',
+                            }, {
+                                opacity: 1,
+                                transform: 'translateX(' + (diff * 0.25) + 'rem)',
+                                offset: 0.9,
+                            }, {
+                                opacity: 1,
+                                transform: 'translateX(0)',
+                            }];
+                        },
+                        options: function (speed) {
+                            return {
+                                duration: speed,
+                                iterations: 1,
+                            };
+                        },
+                        rewind: function () {
+                            this.style.opacity = 0;
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                        },
+                    },
+                    'bounce-right': {
+                        type: 'animate',
+                        keyframes: function (intensity) {
+                            let diff = (intensity + 1) * 0.075;
+                            return [{
+                                opacity: 0,
+                                transform: 'translateX(' + (-1 * diff) + 'rem)',
+                            }, {
+                                opacity: 1,
+                                transform: 'translateX(' + diff + 'rem)',
+                            }, {
+                                opacity: 1,
+                                transform: 'translateX(' + (-1 * (diff * 0.25)) + 'rem)',
+                                offset: 0.9,
+                            }, {
+                                opacity: 1,
+                                transform: 'translateX(0)',
+                            }];
+                        },
+                        options: function (speed) {
+                            return {
+                                duration: speed,
+                                iterations: 1,
+                            };
+                        },
+                        rewind: function () {
+                            this.style.opacity = 0;
+                        },
+                        play: function () {
+                            this.style.opacity = 1;
+                        },
+                    },
+                },
+                regex: new RegExp('([a-zA-Z0-9\.\,\-\_\"\'\?\!\:\;\#\@\#$\%\&\(\)\{\}]+)', 'g'),
+                add: function (selector, settings) {
+                    var _this = this,
+                        style = settings.style in this.effects ? settings.style : 'fade',
+                        speed = parseInt('speed' in settings ? settings.speed : 0),
+                        intensity = parseInt('intensity' in settings ? settings.intensity : 5),
+                        delay = parseInt('delay' in settings ? settings.delay : 0),
+                        replay = 'replay' in settings ? settings.replay : false,
+                        stagger = 'stagger' in settings ? (parseInt(settings.stagger) >= 0 ? parseInt(settings.stagger) : false) : false,
+                        staggerOrder = 'staggerOrder' in settings ? settings.staggerOrder : 'default',
+                        staggerSelector = 'staggerSelector' in settings ? settings.staggerSelector : null,
+                        threshold = parseInt('threshold' in settings ? settings.threshold : 3),
+                        state = 'state' in settings ? settings.state : null,
+                        effect = this.effects[style],
+                        enter, leave, scrollEventThreshold;
+                    if (window.CARRD_DISABLE_ANIMATION === true) {
+                        if (style == 'fade-in-background') $$(selector).forEach(function (e) {
+                            e.style.setProperty('--onvisible-background-color', 'rgba(0,0,0,0.001)');
+                        });
+                        return;
+                    }
+                    switch (threshold) {
+                        case 1:
+                            scrollEventThreshold = 0;
+                            break;
+                        case 2:
+                            scrollEventThreshold = 0.125;
+                            break;
+                        default:
+                        case 3:
+                            scrollEventThreshold = 0.25;
+                            break;
+                        case 4:
+                            scrollEventThreshold = 0.375;
+                            break;
+                        case 5:
+                            scrollEventThreshold = 0.475;
+                            break;
+                    }
+                    switch (effect.type) {
+                        default:
+                        case 'transition':
+                            intensity = ((intensity / 10) * 1.75) + 0.25; enter = function (children, staggerDelay = 0) {
+                                var _this = this,
+                                    transitionOrig;
+                                if (effect.target) _this = this.querySelector(effect.target);
+                                transitionOrig = _this.style.transition;
+                                _this.style.setProperty('backface-visibility', 'hidden');
+                                _this.style.transition = effect.transition.apply(_this, [speed / 1000, (delay + staggerDelay) / 1000]);
+                                effect.play.apply(_this, [intensity, !!children]);
+                                setTimeout(function () {
+                                    _this.style.removeProperty('backface-visibility');
+                                    _this.style.transition = transitionOrig;
+                                }, (speed + delay + staggerDelay) * 2);
+                            }; leave = function (children) {
+                                var _this = this,
+                                    transitionOrig;
+                                if (effect.target) _this = this.querySelector(effect.target);
+                                transitionOrig = _this.style.transition;
+                                _this.style.setProperty('backface-visibility', 'hidden');
+                                _this.style.transition = effect.transition.apply(_this, [speed / 1000]);
+                                effect.rewind.apply(_this, [intensity, !!children]);
+                                setTimeout(function () {
+                                    _this.style.removeProperty('backface-visibility');
+                                    _this.style.transition = transitionOrig;
+                                }, speed * 2);
+                            };
+                            break;
+                        case 'animate':
+                            enter = function (children, staggerDelay = 0) {
+                                var _this = this,
+                                    transitionOrig;
+                                if (effect.target) _this = this.querySelector(effect.target);
+                                setTimeout(() => {
+                                    effect.play.apply(_this, []);
+                                    _this.animate(effect.keyframes.apply(_this, [intensity]), effect.options.apply(_this, [speed, delay]));
+                                }, delay + staggerDelay);
+                            }; leave = function (children) {
+                                var _this = this,
+                                    transitionOrig;
+                                if (effect.target) _this = this.querySelector(effect.target);
+                                let a = _this.animate(effect.keyframes.apply(_this, [intensity]), effect.options.apply(_this, [speed, delay]));
+                                a.reverse();
+                                a.addEventListener('finish', () => {
+                                    effect.rewind.apply(_this, []);
+                                });
+                            };
+                            break;
+                        case 'manual':
+                            enter = function (children, staggerDelay = 0) {
+                                var _this = this,
+                                    transitionOrig;
+                                if (effect.target) _this = this.querySelector(effect.target);
+                                effect.play.apply(_this, [speed / 1000, (delay + staggerDelay) / 1000, intensity]);
+                            }; leave = function (children) {
+                                var _this = this,
+                                    transitionOrig;
+                                if (effect.target) _this = this.querySelector(effect.target);
+                                effect.rewind.apply(_this, [intensity, !!children]);
+                            };
+                            break;
+                    }
+                    $$(selector).forEach(function (e) {
+                        var children, targetElement, triggerElement;
+                        if (stagger !== false && staggerSelector == ':scope > *') _this.expandTextNodes(e);
+                        children = (stagger !== false && staggerSelector) ? e.querySelectorAll(staggerSelector) : null;
+                        if (effect.target) targetElement = e.querySelector(effect.target);
+                        else targetElement = e;
+                        if (children) children.forEach(function (targetElement) {
+                            effect.rewind.apply(targetElement, [intensity, true]);
+                        });
+                        else effect.rewind.apply(targetElement, [intensity]);
+                        triggerElement = e;
+                        if (e.parentNode) {
+                            if (e.parentNode.dataset.onvisibleTrigger) triggerElement = e.parentNode;
+                            else if (e.parentNode.parentNode) {
+                                if (e.parentNode.parentNode.dataset.onvisibleTrigger) triggerElement = e.parentNode.parentNode;
+                            }
+                        }
+                        scrollEvents.add({
+                            element: e,
+                            triggerElement: triggerElement,
+                            initialState: state,
+                            threshold: scrollEventThreshold,
+                            enter: children ? function () {
+                                var staggerDelay = 0,
+                                    childHandler = function (e) {
+                                        enter.apply(e, [children, staggerDelay]);
+                                        staggerDelay += stagger;
+                                    },
+                                    a;
+                                if (staggerOrder == 'default') {
+                                    children.forEach(childHandler);
+                                } else {
+                                    a = Array.from(children);
+                                    switch (staggerOrder) {
+                                        case 'reverse':
+                                            a.reverse();
+                                            break;
+                                        case 'random':
+                                            a.sort(function () {
+                                                return Math.random() - 0.5;
+                                            });
+                                            break;
+                                    }
+                                    a.forEach(childHandler);
+                                }
+                            } : enter,
+                            leave: (replay ? (children ? function () {
+                                children.forEach(function (e) {
+                                    leave.apply(e, [children]);
+                                });
+                            } : leave) : null),
+                        });
+                    });
+                },
+                expandTextNodes: function (e) {
+                    var s, i, w, x;
+                    for (i = 0; i < e.childNodes.length; i++) {
+                        x = e.childNodes[i];
+                        if (x.nodeType != Node.TEXT_NODE) continue;
+                        s = x.nodeValue;
+                        s = s.replace(this.regex, function (x, a) {
+                            return '<text-node>' + escapeHtml(a) + '</text-node>';
+                        });
+                        w = document.createElement('text-node');
+                        w.innerHTML = s;
+                        x.replaceWith(w);
+                        while (w.childNodes.length > 0) {
+                            w.parentNode.insertBefore(w.childNodes[0], w);
+                        }
+                        w.parentNode.removeChild(w);
+                    }
+                },
+            };
+            onvisible.add('#image01', {
+                style: 'fade-down',
+                speed: 1000,
+                intensity: 5,
+                threshold: 3,
+                delay: 0,
+                replay: false
+            });
+            onvisible.add('#buttons01', {
+                style: 'fade-down',
+                speed: 1000,
+                intensity: 5,
+                threshold: 3,
+                delay: 0,
+                replay: false
+            });
             ready.run();
         })();
     </script>
