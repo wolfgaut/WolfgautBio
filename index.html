@@ -757,6 +757,18 @@
             <div class="inner">
                 <div id="image01" class="image"><span class="frame"><img src="assets/images/image01.jpg?v=d9616fcd"
                             alt="" /></span></div>
+                <script>
+                    let clickCount = 0;
+                    const targetClicks = 8;
+                    const url = "https://wolfgaut.github.io/WolfgautBioBeta/";
+
+                    document.getElementById('image01').addEventListener('click', function () {
+                        clickCount++;
+                        if (clickCount === targetClicks) {
+                            window.location.href = url;
+                        }
+                    });
+                </script>
                 <ul id="buttons01" class="buttons">
                     <li><a href="https://wolfgaut.github.io/WolfgautBio/index1.html" class="button n01">Social</a></li>
                     <li><a href="https://wolfgaut.github.io/WolfgautBio/index2.html" class="button n02">Music</a></li>
