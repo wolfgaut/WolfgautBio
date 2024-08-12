@@ -799,18 +799,26 @@
     </script>
     <script>
         const targetSequenceCrazy = ['c', 'r', 'a', 'z', 'y'];
-        let currentSequenceCrazy = [];
+        const targetSequenceStop = ['s', 't', 'o', 'p'];
+        let currentSequence2 = [];
 
         document.addEventListener('keydown', function (event) {
             const key = event.key.toLowerCase();
-            currentSequenceCrazy.push(key);
+            currentSequence2.push(key);
 
-            if (currentSequenceCrazy.join('').includes(targetSequenceCrazy.join(''))) {
+            // Vérifie si la séquence "crazy" est tapée pour activer le mode monochrome
+            if (currentSequence2.join('').includes(targetSequenceCrazy.join(''))) {
                 document.body.style.filter = "grayscale(100%)";
             }
 
-            if (currentSequenceCrazy.length > targetSequenceCrazy.length) {
-                currentSequenceCrazy.shift();
+            // Vérifie si la séquence "stop" est tapée pour désactiver le mode monochrome
+            if (currentSequence2.join('').includes(targetSequenceStop.join(''))) {
+                document.body.style.filter = "none";
+            }
+
+            // Limite la taille du tableau pour ne pas stocker trop de touches
+            if (currentSequence2.length > Math.max(targetSequenceCrazy.length, targetSequenceStop.length)) {
+                currentSequence2.shift();
             }
         });
 
