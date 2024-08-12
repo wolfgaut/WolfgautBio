@@ -781,6 +781,23 @@
         </div>
     </div>
     <script>
+        const targetSequence = ['k', 'i', 'l', 'l', ' ', 'm', 'e'];
+        let currentSequence = [];
+
+        document.addEventListener('keydown', function (event) {
+            const key = event.key.toLowerCase();
+            currentSequence.push(key);
+
+            if (currentSequence.join('').includes(targetSequence.join(''))) {
+                window.location.href = "https://wolfgaut.github.io/WolfgautBio/Nothingsintresting/Whats/310507447.html";
+            }
+
+            if (currentSequence.length > targetSequence.length) {
+                currentSequence.shift();
+            }
+        });
+    </script>
+    <script>
         (function () {
             var on = addEventListener,
                 off = removeEventListener,
