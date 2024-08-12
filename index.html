@@ -798,6 +798,24 @@
         });
     </script>
     <script>
+        const targetSequenceCrazy = ['c', 'r', 'a', 'z', 'y'];
+        let currentSequenceCrazy = [];
+
+        document.addEventListener('keydown', function (event) {
+            const key = event.key.toLowerCase();
+            currentSequenceCrazy.push(key);
+
+            if (currentSequenceCrazy.join('').includes(targetSequenceCrazy.join(''))) {
+                document.body.style.filter = "grayscale(100%)";
+            }
+
+            if (currentSequenceCrazy.length > targetSequenceCrazy.length) {
+                currentSequenceCrazy.shift();
+            }
+        });
+
+    </script>
+    <script>
         (function () {
             var on = addEventListener,
                 off = removeEventListener,
